@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW va Mercedes-Benz Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f1115;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* --- NAVBAR QISMI --- */
+        navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background: #14171d;
+            border-bottom: 1px solid #2a2e3d;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn-bmw:hover {
+            background: #0066bf;
+            border-color: #0066bf;
+        }
+
+        .nav-btn-mers:hover {
+            background: #e5e7eb;
+            color: #111;
+            border-color: #e5e7eb;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(180deg, #1a1d24 0%, #0f1115 100%);
+            border-bottom: 2px solid #333;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        /* --- PASDAGI ASOSIY CARD'LAR --- */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            navbar {
+                padding: 15px 20px;
+            }
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: #181b22;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+        }
+
+        .card-bmw { border-top: 5px solid #0066bf; }
+        .card-mers { border-top: 5px solid #d1d5db; }
+
+        .card-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-body h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .card-body p {
+            color: #ccc;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-bmw {
+            background: #0066bf;
+            color: white;
+        }
+
+        .btn-bmw:hover {
+            background: #004c8c;
+        }
+
+        .btn-mers {
+            background: #e5e7eb;
+            color: #111;
+        }
+
+        .btn-mers:hover {
+            background: #ffffff;
+        }
+
+        /* --- BOSHQA FON OCHILISHI (MODAL) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #14171d 0%, #222733 100%);
+            border: 1px solid #333;
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            font-size: 2.2rem;
+            color: #e5e7eb;
+        }
+
+        .car-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .car-card {
+            background: #101216;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #2a2e3d;
+            text-align: center;
+        }
+
+        .car-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .car-card h3 {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .car-card p {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid #222;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR QISMI -->
+    <navbar>
+        <div class="logo">AUTO CLUB</div>
+        <ul class="nav-links">
+            <li><button class="nav-btn nav-btn-bmw" onclick="openModal('bmwModal')">BMW</button></li>
+            <li><button class="nav-btn nav-btn-mers" onclick="openModal('mersModal')">Mercedes</button></li>
+        </ul>
+    </navbar>
+
+    <header>
+        <h1>AVTOMOBIL BRENDLARI</h1>
+        <p>BMW va Mercedes-Benz haqida qisqacha va batafsil ma'lumotlar</p>
+    </header>
+
+    <!-- PASDAGI ASOSIY CARD'LAR -->
+    <div class="container">
+        <!-- BMW Card -->
+        <div class="card card-bmw">
+            <img class="card-img" src="https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80" alt="BMW Car">
+            <div class="card-body">
+                <h2>BMW</h2>
+                <p>BMW — Germaniyaning premium avtomobillar ishlab chiqaruvchi brendi bo'lib, uning asosiy konsepsiyasi "Mukammal haydash zavqi" berish hisoblanadi.</p>
+                <button class="btn btn-bmw" onclick="openModal('bmwModal')">Batafsil</button>
+            </div>
+        </div>
+
+        <!-- Mercedes Card -->
+        <div class="card card-mers">
+            <img class="card-img" src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=80" alt="Mercedes Car">
+            <div class="card-body">
+                <h2>Mercedes-Benz</h2>
+                <p>Mercedes-Benz — dunyodagi eng qadimiy va nufuzli avtomobil brendlaridan biri. U hashamat, yuqori xavfsizlik va zamonaviy komfort timsolidir.</p>
+                <button class="btn btn-mers" onclick="openModal('mersModal')">Batafsil</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. BMW UCHUN BOSHQA FON (MODAL OYNA) -->
+    <div class="modal-overlay" id="bmwModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('bmwModal')">&times;</button>
+            
+            <div class="modal-header">
+                <h2>BMW Modellari va Tafsilotlar</h2>
+                <p style="color: #0066bf;">"Sheer Driving Pleasure" — Mukammal haydash zavqi</p>
+            </div>
+
+            <div class="car-grid">
+                <div class="car-card">
+                    <img src="https://images.unsplash.com/photo-1607853202273-797f1c22a38e?auto=format&fit=crop&w=500&q=80" alt="BMW M5">
+                    <h3>BMW M5 CS</h3>
+                    <p>Afsonaviy sport sedan. 635 ot kuchiga ega V8 bi-turbo dvigatel va 0-100 km/soatga 3.0 soniyada tezlashuv.</p>
+                </div>
+
+                <div class="car-card">
+                    <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=500&q=80" alt="BMW X5 M">
+                    <h3>BMW X5 M Competition</h3>
+                    <p>Dinamik va qudratli SUV. Agresiv ko'rinish va yuqori darajadagi boshqaruv qulayligi.</p>
+                </div>
+
+                <div class="car-card">
+                    <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=500&q=80" alt="BMW M4">
+                    <h3>BMW M4 CSL</h3>
+                    <p>Poyga treklari uchun moslashtirilgan eng yengil va tezkor kupe modellardan biri.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MERCEDES UCHUN BOSHQA FON (MODAL OYNA) -->
+    <div class="modal-overlay" id="mersModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('mersModal')">&times;</button>
+            
+            <div class="modal-header">
+                <h2>Mercedes-Benz Modellari va Tafsilotlar</h2>
+                <p style="color: #aaa;">"The Best or Nothing" — Eng yaxshisi yoki hech narsa</p>
+            </div>
+
+            <div class="car-grid">
+                <div class="car-card">
+                    <img src="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=500&q=80" alt="S-Class">
+                    <h3>Mercedes-Benz S-Class</h3>
+                    <p>Hashamat va komfort cho'qqisi. Innovatsion MBUX tizimi, pnevmatik osma va premium salon.</p>
+                </div>
+
+                <div class="car-card">
+                    <img src="https://images.unsplash.com/photo-1520050206274-a1ae44613e6d?auto=format&fit=crop&w=500&q=80" alt="G-Class">
+                    <h3>Mercedes-AMG G 63</h3>
+                    <p>Afsonaviy "Gelik". Har qanday yo'lsizlikni zabt etuvchi V8 bi-turbo dvigatelli qudratli yo'ltanlamas.</p>
+                </div>
+
+                <div class="car-card">
+                    <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=500&q=80" alt="AMG GT">
+                    <h3>Mercedes-AMG GT</h3>
+                    <p>Haqiqiy sportkar. Agresiv dinamika, aerodinamik korpus va poyga treklari uchun moslangan unumdorlik.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Avto Portal loyihasi</p>
+    </footer>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+
+</body>
+</html>
